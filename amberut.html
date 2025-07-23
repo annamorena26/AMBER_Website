@@ -1,0 +1,243 @@
+<?php include 'db.php'; ?>
+
+<?php
+$message = '';
+$success = false;
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $name = trim($_POST['name']);
+    $email = filter_var(trim($_POST['email']), FILTER_VALIDATE_EMAIL);
+
+    if ($name && $email) {
+        $stmt = $conn->prepare("INSERT INTO users_f (name, email) VALUES (?, ?)");
+        $stmt->bind_param("ss", $name, $email);
+        if ($stmt->execute()) {
+            $message = "User added successfully!";
+            $success = true;
+        } else {
+            $message = "Failed to add user.";
+        }
+    } else {
+        $message = "Please enter a valid name and email.";
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Panel</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #ffe4ec;
+            color: #333;
+        }
+
+        .panel-layout {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background-color: #d63384;
+            color: #fff;
+            padding: 30px 20px;
+        }
+
+        .sidebar h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #fff;
+            text-decoration: none;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .panel {
+            background-color: #fff8fb;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .panel h2 {
+            text-align: center;
+            color: #b30059;
+        }
+
+        .blinking-title {
+            animation: blink 1s step-start infinite;
+            font-size: 1.4em;
+            text-align: center;
+            color: #a6004c;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        form {
+            background: #fff0f6;
+            padding: 20px;
+            border: 1px solid #f5c2d8;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0 15px;
+            border: 1px solid #e9b6cc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #d63384;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #c2186a;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff0f6;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid #f5c2d8;
+        }
+
+        th {
+            background: #f8d7e3;
+            color: #800040;
+        }
+
+        tr:hover {
+            background-color: #ffe6f0;
+        }
+
+        .actions a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: #d63384;
+            font-weight: bold;
+        }
+
+        .actions a:hover {
+            color: #a61c5d;
+        }
+
+        .message {
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .success {
+            background: #f3d1e2;
+            color: #4a0033;
+            border: 1px solid #e6a5c2;
+        }
+
+        .error {
+            background: #ffd6dc;
+            color: #660022;
+            border: 1px solid #f5aeb7;
+        }
+    </style>
+</head>
+<body>
+
+<div class="panel-layout">
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <a href="#">Dashboard</a>
+        <a href="#">Users</a>
+        <a href="#">Settings</a>
+        <a href="#">Logout</a>
+    </div>
+
+    <div class="content">
+        <div class="panel">
+            <div class="blinking-title">🚀 User Registration 🚀</div>
+
+            <?php if ($message): ?>
+                <div class="message <?= $success ? 'success' : 'error' ?>">
+                    <?= htmlspecialchars($message) ?>
+                </div>
+            <?php endif; ?>
+
+            <form method="post" autocomplete="off">
+                <label for="name">Name:</label>
+                <input type="text" name="name" id="name" required>
+
+                <label for="email">Email:</label>
+                <input type="email" name="email" id="email" required>
+
+                <button type="submit">Add</button>
+            </form>
+
+            <h2>List of New Users</h2>
+            <table>
+                <tr><th>ID</th><th>Name</th><th>Email</th><th>Actions</th></tr>
+                <?php
+                $result = $conn->query("SELECT * FROM users_f");
+                while ($row = $result->fetch_assoc()) {
+                    echo "<tr>
+                        <td>" . htmlspecialchars($row['id']) . "</td>
+                        <td>" . htmlspecialchars($row['name']) . "</td>
+                        <td>" . htmlspecialchars($row['email']) . "</td>
+                        <td class='actions'>
+                            <a href='edit.php?id={$row['id']}'>Edit</a>
+                            <a href='delete.php?id={$row['id']}'>Delete</a>
+                        </td>
+                    </tr>";
+                }
