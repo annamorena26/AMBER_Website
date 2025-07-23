@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Amberut</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: pink;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            padding: 20px 0;
+            margin: 0;
+        }
+        .panel-layout {
+            display: flex;
+            height: calc(100vh - 60px);
+            max-height: 700px;
+            margin: 0 20px 20px 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            background: white;
+        }
+        .sidebar {
+            width: 220px;
+            background: #f8bbd0; /* lighter pink */
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: inset -4px 0 8px rgba(0,0,0,0.1);
+        }
+        .sidebar h2 {
+            margin-top: 0;
+            color: #880e4f;
+            font-weight: bold;
+        }
+        .sidebar a {
+            display: block;
+            margin: 12px 0;
+            text-decoration: none;
+            color: #880e4f;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .sidebar a:hover {
+            color: #4a0072;
+        }
+        .content {
+            flex: 1;
+            padding: 30px;
+            box-sizing: border-box;
+            position: relative;
+            background: #fff0f6;
+            border-radius: 0 10px 10px 0;
+            box-shadow: 0 6px 15px rgba(136, 14, 79, 0.2);
+        }
+        .panel {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(136, 14, 79, 0.3);
+            max-width: 600px;
+            margin: auto;
+        }
+        .blinking-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #880e4f;
+            animation: blink 1.5s infinite;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        @keyframes blink {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0; }
+        }
+        /* Message styles - example */
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+        .success {
+            background-color: #c8e6c9;
+            color: #256029;
+        }
+        .error {
+            background-color: #ffcdd2;
+            color: #b71c1c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Amber's Space</h1>
+    <div class="panel-layout">
+        <div class="sidebar">
+            <h2>Hey! Check here</h2>
+            <a href="#">Family Tree</a>
+            <a href="#">Biography</a>
+            <a href="#">Favorites</a>
+            <a href="#">Exit</a>
+        </div>
+        <div class="content">
+            <div class="panel">
+                <div class="blinking-title">🚀 Let's Begin 🚀</div>
+
+                <!--
+                <?php if ($message): ?>
+                    <div class="message <?= $success ? 'success' : 'error' ?>">
+                        <?= htmlspecialchars($message) ?>
+                    </div>
+                <?php endif; ?>
+                -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>
